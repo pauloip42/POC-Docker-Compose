@@ -7,16 +7,18 @@ const express = require('express');
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-    // const email = req.body.email;
-    // console.log(email);
-    const response = await sendEmail();
+    const email = req.body.email;
+    const message = req.body.message;
+    console.log(email)
+
+    const response = await sendEmail(email, message);
 
     res.status(200);
     res.json(response);
 });
 
 // async..await is not allowed in global scope, must use a wrapper
-async function sendEmail() {
+async function sendEmail(email, message) {
   // Generate test SMTP service account from ethereal.email
   // Only needed if you don't have a real mail account for testing
   let testAccount = await nodemailer.createTestAccount();
@@ -35,9 +37,9 @@ async function sendEmail() {
   // send mail with defined transport object
   let info = await transporter.sendMail({
     from: `"Fred Foo 👻" <${process.env.EMAIL}>`, // sender address
-    to: `${process.env.EMAIL}`, // list of receivers
+    to: `${email}`, // list of receivers
     subject: "Hello ✔", // Subject line
-    text: "Hello world?", // plain text body
+    text: `${message}`, // plain text body
     html: "<b>Hello world?</b>", // html body
   });
 
